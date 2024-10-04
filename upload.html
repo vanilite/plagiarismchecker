@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plagiarism Checker</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Plagiarism Checker</h1>
+        <form id="uploadForm" class="mt-4">
+            <div class="form-group">
+                <label for="file">Upload Document</label>
+                <input type="file" class="form-control-file" id="file" name="file" accept=".doc,.docx,.pdf,.txt" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+        <div id="results" class="mt-4"></div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('file');
+        const form = document.getElementById('uploadForm');
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const file = fileInput.files[0];
+            if (!file) {
+                alert('Please select a file.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultsDiv = document.getElementById('results');
+                if (data.error) {
+                    resultsDiv.innerHTML = `
+                        <div class="alert alert-danger">
+                            <p>Error: ${data.error}</p>
+                        </div>
+                    `;
+                } else {
+                    resultsDiv.innerHTML = `
+                        <div class="alert alert-info">
+                            <p>Similarity: ${data.similarity}%</p>
+                        </div>
+                        <ul class="list-group">
+                            ${data.matches.map(match => `<li class="list-group-item">${match.phrase} - <a href="${match.url}" target="_blank">${match.url}</a></li>`).join('')}
+                        </ul>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
