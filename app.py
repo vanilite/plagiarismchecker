@@ -4,6 +4,9 @@ import os
 from utils import extract_text_from_file, extract_random_phrases, search_google, scrape_content, compare_text
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'

@@ -53,8 +53,8 @@ def extract_random_phrases(text, num_phrases=5):
     return random_phrases
 
 def search_google(query):
-    api_key = 'AIzaSyDpszVVzcyrxVRK2wyaWVn62T8G7igkHLc'  # Replace with your actual API key
-    cse_id = 'a40e86dec6883429e'  # Replace with your actual CSE ID
+    api_key = os.getenv('GOOGLE_API_KEY')  # Replace with your actual API key
+    cse_id = os.getenv('GOOGLE_CSE_ID')  # Replace with your actual CSE ID
     service = build("customsearch", "v1", developerKey=api_key)
     
     try:
